@@ -80,7 +80,8 @@
         <Grid Grid.Row="2" Margin="0" Name="grid2" Background="#FF00CBFF">
             <ComboBox Name="cbPort" Margin="0,5,5,0" HorizontalAlignment="Right" Width="106" Background="#00000000" DropDownOpened="cbPort_DropDownOpened" />
             <Label Margin="5,0" HorizontalAlignment="Left" Width="106" Background="#00000000" Name="timerTick" />
-            <Label Margin="135,0,0,0" HorizontalAlignment="Left" Width="106" Background="#00000000" Name="datacount" />
+            <Label Margin="135,0,0,0" HorizontalAlignment="Left" Width="106" Background="#00000000" Name="datacount" >
+            </Label>
         </Grid>
     </Grid>
 </Window>

@@ -51,7 +51,7 @@ namespace EzMon_V0._01
         private int peakCounter = 0;
         private int interPeakCounter = 0;
         private System.Collections.ArrayList hrArray = new System.Collections.ArrayList();
-        private const double DATARATE = 100;            //readings per second
+        public double dataRate = 100;            //readings per second
 
 #endregion
 
@@ -215,14 +215,14 @@ namespace EzMon_V0._01
 
     private double ConvertCountToHeartRate(int myVal){
         if (myVal > 0)
-            return (60 * DATARATE) / myVal;
+            return (60 * dataRate) / myVal;
         else
             return 0;
     }
 
     private double ConvertHeartRateToCount(double myVal){
         if (myVal > 0)
-            return (60 * DATARATE) / myVal;
+            return (60 * dataRate) / myVal;
         else
             return 0;
     }

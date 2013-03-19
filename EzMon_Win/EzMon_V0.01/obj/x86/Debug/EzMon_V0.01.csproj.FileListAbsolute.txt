@@ -16,3 +16,20 @@ C:\Users\Rahul\Google Drive\ezMon PC Software\EzMon_V0.01_20121101_workingCode\E
 C:\Users\Rahul\Google Drive\ezMon PC Software\EzMon_V0.01_20121101_workingCode\EzMon_V0.01\obj\x86\Debug\GenerateResource.write.1.tlog
 C:\Users\Rahul\Google Drive\ezMon PC Software\EzMon_V0.01_20121101_workingCode\EzMon_V0.01\obj\x86\Debug\EzMon_V0.01.exe.manifest
 C:\Users\Rahul\Google Drive\ezMon PC Software\EzMon_V0.01_20121101_workingCode\EzMon_V0.01\obj\x86\Debug\EzMon_V0.01.application
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0.01.exe
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0.01.pdb
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\bin\Debug\EzMon_V0.01.exe.manifest
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\bin\Debug\EzMon_V0.01.application
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\bin\Debug\EzMon_V0.01.exe
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\bin\Debug\EzMon_V0.01.pdb
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0.01.csprojResolveAssemblyReference.cache
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\MainWindow.baml
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\App.g.cs
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0.01_MarkupCompile.cache
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0.01.g.resources
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0._01.ChartControl.resources
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0._01.Properties.Resources.resources
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0.01.csproj.GenerateResource.Cache
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0.01.exe.manifest
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0.01.application

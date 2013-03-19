@@ -81,6 +81,7 @@ namespace EzMon_V0._01
 
         #region heart rate vars
         HeartRateHelper HRHelper = HeartRateHelper.Instance;
+        private int dataRateCnt = 0;
         #endregion
 
 #endregion
@@ -268,6 +269,7 @@ namespace EzMon_V0._01
                         datacount.Content = datacnt.ToString();
                         */
 
+                        IncDataRateCnt();
                         chart1.Series[0].Points.AddY(val);
                         addToHeartRateCalculation(val);
                         BeginHRComputation();
@@ -294,6 +296,7 @@ namespace EzMon_V0._01
             UpdateTemp();
             UpdateHeartRate();
             fallGridCheck();
+            UpdateDataRate();
         }
 
         private void fallGridCheck()
@@ -469,7 +472,23 @@ namespace EzMon_V0._01
             }
         }
 
-#endregion
+        #endregion
+
+        #region "DataRate" 
+
+        private void UpdateDataRate()
+        {
+            HRHelper.dataRate = dataRateCnt;
+            datacount.Content = dataRateCnt;
+            dataRateCnt = 0;
+        }
+
+        private void IncDataRateCnt()
+        {
+            dataRateCnt++;
+        }
+
+        #endregion
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -497,10 +516,5 @@ namespace EzMon_V0._01
             }
             return new string(b);
         }
-
-
-
-
-
     }
 }
