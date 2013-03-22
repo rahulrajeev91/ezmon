@@ -84,6 +84,10 @@ namespace EzMon_V0._01
         private int dataRateCnt = 0;
         #endregion
 
+        #region "developer mode variables"
+        Boolean devMode = false;
+        #endregion
+
 #endregion
 
         #region initialization functions
@@ -119,7 +123,9 @@ namespace EzMon_V0._01
             chart1 = myChartControl.chartDesign;
             chart1.Height = CHART_INIT_HEIGHT;
             chart1.Width = CHART_INIT_WIDTH;
-            chart1.Series[0].Points.Add(0);
+
+            ResetAllCharts();
+
         }
 
         //reset and refresh all parameters to default values at the start of execution
@@ -260,7 +266,8 @@ namespace EzMon_V0._01
             {
                 ParseData();
                 if (points.Count>0)
-                    foreach(uint val in points){
+                    foreach(uint val in points)
+                    {
 
                         /*//debug function
                         datacnt++;
@@ -270,27 +277,14 @@ namespace EzMon_V0._01
                         */
 
                         IncDataRateCnt();
-                        chart1.Series[0].Points.AddY(val);
+                        AddToChart(val);
                         addToHeartRateCalculation(val);
                         BeginHRComputation();
-
-                        //debug
-                        chart1.Series[1].Points.AddY(HRHelper.getGraph());
-                        chart1.Series[2].Points.AddY(HRHelper.getMaxima());
-                        chart1.Series[3].Points.AddY(HRHelper.getThreshold());
                     }
-                while (chart1.Series[0].Points.Count > MAX_POINTS)
-                {
-                    chart1.Series[0].Points.RemoveAt(0);
-                    //debug
-                    chart1.Series[1].Points.RemoveAt(0);
-                    chart1.Series[2].Points.RemoveAt(0);
-                    chart1.Series[3].Points.RemoveAt(0);
-                }
-                
+                ScrollCharts();
             }
         }
-
+       
         private void oneSecStep_Tick(object sender, EventArgs e)
         {
             UpdateTemp();
@@ -348,7 +342,15 @@ namespace EzMon_V0._01
                 switch (parseStep)
                 {
                     case ParseStatus.idle:
-                        tempByte = (Byte)serialPort.ReadByte();
+                        try
+                        {
+                            tempByte = (Byte)serialPort.ReadByte();
+                        }
+                        catch (Exception)
+                        {
+                            parseStep = ParseStatus.idle;
+                            break;
+                        }
                         byteCount--;
                         if (tempByte == 0xFF)
                         {
@@ -358,7 +360,15 @@ namespace EzMon_V0._01
                         break;
 
                     case ParseStatus.header2:
-                        tempByte = (Byte)serialPort.ReadByte();
+                        try
+                        {
+                            tempByte = (Byte)serialPort.ReadByte();
+                        }
+                        catch (Exception)
+                        {
+                            parseStep = ParseStatus.idle;
+                            break;
+                        }
                         byteCount--;
                         if (tempByte== 0xFE)
                             parseStep = ParseStatus.length; 
@@ -367,13 +377,29 @@ namespace EzMon_V0._01
                         break;
 
                     case ParseStatus.length:
-                        payloadLength = (Byte)serialPort.ReadByte();
+                        try
+                        {
+                            payloadLength = (Byte)serialPort.ReadByte();
+                        }
+                        catch (Exception)
+                        {
+                            parseStep = ParseStatus.idle;
+                            break;
+                        }
                         byteCount--;
                         parseStep = ParseStatus.type;
                         break;
 
                     case ParseStatus.type:
-                        tempByte = (Byte)serialPort.ReadByte();
+                        try
+                        {
+                            tempByte = (Byte)serialPort.ReadByte();
+                        }
+                        catch (Exception)
+                        {
+                            parseStep = ParseStatus.idle;
+                            break;
+                        }
                         byteCount--;
                         switch (tempByte)
                         {
@@ -407,8 +433,16 @@ namespace EzMon_V0._01
                         break;
 
                     case ParseStatus.contDataPayload:
-                        val = (uint)serialPort.ReadByte();
-                        val = val * 256 + (uint)serialPort.ReadByte();
+                        try
+                        {
+                            val = (uint)serialPort.ReadByte();
+                            val = val * 256 + (uint)serialPort.ReadByte();
+                        }
+                        catch (Exception)
+                        {
+                            parseStep = ParseStatus.idle;
+                            break;
+                        }
                         points.Add(val);
                         byteCount--;
                         //debugText.Text +=val +"\n";
@@ -417,12 +451,28 @@ namespace EzMon_V0._01
                         break;
 
                     case ParseStatus.singleData_subtype:
-                        tempByte = (Byte)serialPort.ReadByte();
+                        try
+                        {
+                            tempByte = (Byte)serialPort.ReadByte();
+                        }
+                        catch (Exception)
+                        {
+                            parseStep = ParseStatus.idle;
+                            break;
+                        }
                         byteCount--;
                         switch (tempByte)
                         {
                             case 0x00:
-                                tempByte = (Byte)serialPort.ReadByte();
+                                try
+                                {
+                                    tempByte = (Byte)serialPort.ReadByte();
+                                }
+                                catch (Exception)
+                                {
+                                    parseStep = ParseStatus.idle;
+                                    break;
+                                }
                                 byteCount--;
                                 temperature = (int)tempByte;
                                 break;
@@ -490,6 +540,95 @@ namespace EzMon_V0._01
 
         #endregion
 
+        #region "Chart Entry"
+
+        private void AddToChart(uint val)
+        {
+            chart1.Series[0].Points.AddY(val);
+            //developer mode
+            DeveloperMode_AddToCharts();
+        }
+
+       
+        private void ScrollCharts()
+        {
+            while (chart1.Series[0].Points.Count > MAX_POINTS)
+            {
+                chart1.Series[0].Points.RemoveAt(0);
+                //developer mode
+                DeveloperMode_ScrollCharts();
+            }
+        }
+
+         private void DeveloperMode_AddToCharts()
+        {
+            if (devMode)
+            {
+                chart1.Series[1].Points.AddY(HRHelper.getGraph());
+                chart1.Series[2].Points.AddY(HRHelper.getMaxima());
+                chart1.Series[3].Points.AddY(HRHelper.getThreshold());
+            }
+        }
+        
+        private void DeveloperMode_ScrollCharts()
+        {
+            if (devMode)
+            {
+                chart1.Series[1].Points.RemoveAt(0);
+                chart1.Series[2].Points.RemoveAt(0);
+                chart1.Series[3].Points.RemoveAt(0);
+            }
+        }
+
+        private void ResetAllCharts()
+        {
+            chart1.Series[0].Points.Clear();
+            //developerMode
+            chart1.Series[1].Points.Clear();
+            chart1.Series[2].Points.Clear();
+            chart1.Series[3].Points.Clear();
+
+            InitChartSeries();
+        }
+
+        private void InitChartSeries()
+        {
+            chart1.Series[0].Points.Add(0);
+
+            // developer mode plots
+            chart1.Series[1].Points.Add(0);
+            chart1.Series[2].Points.Add(0);
+            chart1.Series[3].Points.Add(0);
+        }
+
+
+        #endregion
+
+        #region "Developer Mode"
+
+        private void DevModeChecked(object sender, RoutedEventArgs e)
+        {
+            ResetAllCharts();
+            timerTick.Visibility = Visibility.Visible;
+            timerTick_LABEL.Visibility = Visibility.Visible;
+            datacount.Visibility = Visibility.Visible;
+            datacount_LABEL.Visibility = Visibility.Visible;
+            chart1.ChartAreas[1].Visible = true;
+            devMode = true;
+        }
+
+        private void DevModeUnChecked(object sender, RoutedEventArgs e)
+        {
+            timerTick.Visibility = Visibility.Hidden;
+            timerTick_LABEL.Visibility = Visibility.Hidden;
+            datacount.Visibility = Visibility.Hidden;
+            datacount_LABEL.Visibility = Visibility.Hidden;
+            chart1.ChartAreas[1].Visible = false;
+            devMode = false;
+        }
+
+        #endregion
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Disconnect();
@@ -516,5 +655,7 @@ namespace EzMon_V0._01
             }
             return new string(b);
         }
+
+
     }
 }

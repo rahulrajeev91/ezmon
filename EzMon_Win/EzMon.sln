@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EzMon_V0.01", "EzMon_V0.01\EzMon_V0.01.csproj", "{2F148651-DB76-49A6-B335-FF50B8106E30}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EzMon", "EzMon_V0.01\EzMon.csproj", "{2F148651-DB76-49A6-B335-FF50B8106E30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

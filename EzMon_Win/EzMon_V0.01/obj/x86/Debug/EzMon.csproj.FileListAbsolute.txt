@@ -1,0 +1,17 @@
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\bin\Debug\EzMon.exe.manifest
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\bin\Debug\EzMon.application
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\bin\Debug\EzMon.exe
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\bin\Debug\EzMon.pdb
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\MainWindow.baml
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\App.g.cs
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_MarkupCompile.cache
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon.g.resources
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon_V0._01.ChartControl.resources
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon.Properties.Resources.resources
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon.csproj.GenerateResource.Cache
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon.exe.manifest
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon.application
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon.exe
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon.pdb
+C:\Users\Rahul\Documents\GitHub\ezmon\EzMon_Win\EzMon_V0.01\obj\x86\Debug\EzMon.csprojResolveAssemblyReference.cache

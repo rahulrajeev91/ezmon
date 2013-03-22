@@ -22,6 +22,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="106*" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="1" Margin="0" Name="HRGrid">
@@ -55,16 +56,27 @@
                         </Label.Content>
                     </Label>
                 </Grid>
+                
+                <Grid Grid.Row="3" Margin="0" Name="AccGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35" />
+                        <RowDefinition Height="3" />
+                        <RowDefinition Height="100" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Accelrometer" Foreground="White" FontSize="30" />
+                    <Canvas Grid.Row="1" Margin="0" Background="#FFFF6500" />
+                </Grid>
 
-                <ScrollViewer Visibility="Collapsed" Grid.Row="4" Margin="0,0,0,5" VerticalScrollBarVisibility="Visible" VerticalContentAlignment="Bottom">
-                    <TextBlock   Name="debugText" Text="" Margin="10,0,0,0" />
-                </ScrollViewer>
-
-                <Grid Grid.Row="3" Margin="5,20,5,5" Name="fallGrid" Visibility="Collapsed">
+                <Grid Grid.Row="4" Margin="5,20,5,5" Name="fallGrid" Visibility="Collapsed">
                     <Rectangle RadiusX="5" RadiusY="5" Fill="#FFFF6500" />
                     <Label Margin="0" Content="FALL DETECTED" FontSize="24" FontWeight="Normal" Foreground="White" FontStretch="Condensed" Padding="10,30" HorizontalContentAlignment="Center" />
                 </Grid>
-        </Grid>
+
+                <ScrollViewer Visibility="Visible" Grid.Row="5" Margin="0,0,0,5" VerticalScrollBarVisibility="Hidden" VerticalContentAlignment="Bottom">
+                    <TextBlock   Name="debugText" Text="" Margin="10,0,0,0" />
+                </ScrollViewer>
+            </Grid>
         </Grid>
         <Grid Margin="0" Name="top">
             <Grid.RowDefinitions>
@@ -74,14 +86,16 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="1" Margin="0" Background="#FF00CBFF"></Grid>
             <Canvas Grid.Row="2" Margin="0" Background="#FF000000" />
-            <Image HorizontalAlignment="Left" Margin="10" Stretch="Uniform" Width="Auto" Source="/EzMon_V0.01;component/Images/ezMon%20logo_horizaonta_black_lowres.png" />
+            <Image HorizontalAlignment="Left" Margin="10" Stretch="Uniform" Width="Auto" Source="/EzMon;component/Images/ezMon%20logo_horizaonta_black_lowres.png" />
             <Button Content="CONNECT" Name="ConnectDisconnectButton" Width="172" HorizontalAlignment="Right" Margin="0,10,10,10" FontSize="24" Foreground="White" Background="#ffff6500" FontWeight="Bold" FontFamily="Roboto" Click="ConnectDisconnectButton_Click"></Button>
         </Grid>
-        <Grid Grid.Row="2" Margin="0" Name="grid2" Background="#FF00CBFF">
-            <ComboBox Name="cbPort" Margin="0,5,5,0" HorizontalAlignment="Right" Width="106" Background="#00000000" DropDownOpened="cbPort_DropDownOpened" />
-            <Label Margin="5,0" HorizontalAlignment="Left" Width="106" Background="#00000000" Name="timerTick" />
-            <Label Margin="135,0,0,0" HorizontalAlignment="Left" Width="106" Background="#00000000" Name="datacount" >
-            </Label>
+        <Grid Grid.Row="2" Margin="0" Name="grid2" Background="#FF00CBFF" Height="25" VerticalAlignment="Bottom">
+            <ComboBox Name="cbPort" Margin="0,3,5,3" HorizontalAlignment="Right" Width="75" Background="#00000000" DropDownOpened="cbPort_DropDownOpened" />
+            <Label Margin="5,0,0,0" HorizontalAlignment="Left" Width="66" Background="#00000000" Name="timerTick_LABEL" Content="Timer Tick:" />
+            <Label Margin="71,0,0,0" HorizontalAlignment="Left" Width="50" Background="#00000000" Name="timerTick" />
+            <Label Margin="130,0,0,0" HorizontalAlignment="Left" Width="65" Background="#00000000" Name="datacount_LABEL" Content="Data Rate:" />
+            <Label Margin="195,0,0,0" HorizontalAlignment="Left" Width="50" Background="#00000000" Name="datacount" />
+            <CheckBox Content="Developer Mode" HorizontalAlignment="Right" Margin="0,5,85,5" Width="110" Checked="DevModeChecked" Unchecked="DevModeUnChecked"/>
         </Grid>
     </Grid>
 </Window>
