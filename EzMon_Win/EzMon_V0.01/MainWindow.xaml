@@ -46,7 +46,7 @@
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
                     <TextBlock Text="Temperature" Foreground="White" FontSize="30" />
-                    <TextBlock Name="tbTemperature" Text="--" Foreground="#FF00CBFF" FontSize="70" Margin="0,22,33,0" HorizontalAlignment="Right" Width="89" FontStretch="Normal" FontWeight="Normal" Grid.RowSpan="3" TextAlignment="Right" />
+                    <TextBlock Name="tbTemperature" Text="--" Foreground="#FF00CBFF" FontSize="70" Margin="0,22,33,0" HorizontalAlignment="Right" Width="152" FontStretch="Normal" FontWeight="Normal" Grid.RowSpan="3" TextAlignment="Right" />
                     <Canvas Grid.Row="1" Margin="0" Background="#FFFF6500" />
                     <Label Grid.Row="2" Margin="0" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="Auto" Padding="0" FontSize="16" Foreground="White" >
                         <Label.Content>
@@ -57,7 +57,7 @@
                     </Label>
                 </Grid>
                 
-                <Grid Grid.Row="3" Margin="0" Name="AccGrid">
+                <Grid Grid.Row="3" Margin="0" Name="AccGrid" Visibility="Hidden">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35" />
                         <RowDefinition Height="3" />
@@ -74,7 +74,7 @@
                 </Grid>
 
                 <ScrollViewer Visibility="Visible" Grid.Row="5" Margin="0,0,0,5" VerticalScrollBarVisibility="Hidden" VerticalContentAlignment="Bottom">
-                    <TextBlock   Name="debugText" Text="" Margin="10,0,0,0" />
+                    <TextBlock   Name="debugText" Margin="10,0,0,0" />
                 </ScrollViewer>
             </Grid>
         </Grid>
@@ -91,10 +91,10 @@
         </Grid>
         <Grid Grid.Row="2" Margin="0" Name="grid2" Background="#FF00CBFF" Height="25" VerticalAlignment="Bottom">
             <ComboBox Name="cbPort" Margin="0,3,5,3" HorizontalAlignment="Right" Width="75" Background="#00000000" DropDownOpened="cbPort_DropDownOpened" />
-            <Label Margin="5,0,0,0" HorizontalAlignment="Left" Width="66" Background="#00000000" Name="timerTick_LABEL" Content="Timer Tick:" />
-            <Label Margin="71,0,0,0" HorizontalAlignment="Left" Width="50" Background="#00000000" Name="timerTick" />
-            <Label Margin="130,0,0,0" HorizontalAlignment="Left" Width="65" Background="#00000000" Name="datacount_LABEL" Content="Data Rate:" />
-            <Label Margin="195,0,0,0" HorizontalAlignment="Left" Width="50" Background="#00000000" Name="datacount" />
+            <Label Margin="5,0,0,0" HorizontalAlignment="Left" Width="66" Background="#00000000" Name="timerTick_LABEL" Content="Timer Tick:" Visibility="Hidden"/>
+            <Label Margin="71,0,0,0" HorizontalAlignment="Left" Width="50" Background="#00000000" Name="timerTick" Visibility="Hidden" />
+            <Label Margin="130,0,0,0" HorizontalAlignment="Left" Width="65" Background="#00000000" Name="datacount_LABEL" Content="Data Rate:" Visibility="Hidden"/>
+            <Label Margin="195,0,0,0" HorizontalAlignment="Left" Width="50" Background="#00000000" Name="datacount" Visibility="Hidden"/>
             <CheckBox Content="Developer Mode" HorizontalAlignment="Right" Margin="0,5,85,5" Width="110" Checked="DevModeChecked" Unchecked="DevModeUnChecked"/>
         </Grid>
     </Grid>

@@ -310,7 +310,7 @@ namespace EzMon_V0._01
 
         private void UpdateTemp()
         {
-            tbTemperature.Text = (temperature+3).ToString();
+            tbTemperature.Text = ((double)temperature/5.0).ToString();
             //tbTemperature.Text = "34";
         }
 
@@ -371,12 +371,12 @@ namespace EzMon_V0._01
                         }
                         byteCount--;
                         if (tempByte== 0xFE)
-                            parseStep = ParseStatus.length; 
+                            parseStep = ParseStatus.type; 
                         else
                             parseStep = ParseStatus.idle;   //reset
                         break;
 
-                    case ParseStatus.length:
+/*                    case ParseStatus.length:
                         try
                         {
                             payloadLength = (Byte)serialPort.ReadByte();
@@ -389,6 +389,7 @@ namespace EzMon_V0._01
                         byteCount--;
                         parseStep = ParseStatus.type;
                         break;
+*/
 
                     case ParseStatus.type:
                         try
@@ -405,7 +406,8 @@ namespace EzMon_V0._01
                         {
                             case 0x02:
                                 //Alerts
-                                parseStep = ParseStatus.alert;
+                                //parseStep = ParseStatus.alert;
+                                parseStep = ParseStatus.idle;   //debug - no alerts
                                 break;
                             case 0x03:
                                 //Continious Data
@@ -443,8 +445,19 @@ namespace EzMon_V0._01
                             parseStep = ParseStatus.idle;
                             break;
                         }
-                        points.Add(val);
-                        byteCount--;
+                        points.Add(val);    //add to PPG value list
+                        try
+                        {
+                            debugText.Text = ((double)((int)serialPort.ReadByte() - 128) / 64.0).ToString() + " : " +
+                                ((double)((int)serialPort.ReadByte() - 128) / 64.0).ToString() + " : " + 
+                                ((double)((int)serialPort.ReadByte() - 128) / 64.0).ToString();
+                        }
+                        catch (Exception)
+                        {
+                            parseStep = ParseStatus.idle;
+                            break;
+                        }
+                        byteCount-=5;
                         //debugText.Text +=val +"\n";
 
                         parseStep = ParseStatus.idle;       //reset
@@ -474,7 +487,7 @@ namespace EzMon_V0._01
                                     break;
                                 }
                                 byteCount--;
-                                temperature = (int)tempByte;
+                                temperature = (int)tempByte;    //set the temperature
                                 break;
                             default:
                                 parseStep = ParseStatus.idle;
