@@ -88,6 +88,15 @@ namespace EzMon_V0._01
         Boolean devMode = false;
         #endregion
 
+        #region "Activity Variables"
+
+        double[] gravity = {0,0,0};
+        Double magnitude, magnitudeSmoothened;
+        private const double alpha = 0.8; //for first highpass filter to cancel out effect of gravity
+        private const double beta = 0.995; //for smoothening the magnitude
+
+        #endregion
+
 #endregion
 
         #region initialization functions
@@ -103,7 +112,7 @@ namespace EzMon_V0._01
             Reset();        //reset and refresh all parameters to default values at the start of execution
 
             InitializeTimer();
-            
+                        
             //InputMockTestVals();
         }
 
@@ -448,9 +457,7 @@ namespace EzMon_V0._01
                         points.Add(val);    //add to PPG value list
                         try
                         {
-                            debugText.Text = ((double)((int)serialPort.ReadByte() - 128) / 64.0).ToString() + " : " +
-                                ((double)((int)serialPort.ReadByte() - 128) / 64.0).ToString() + " : " + 
-                                ((double)((int)serialPort.ReadByte() - 128) / 64.0).ToString();
+                            AccelerometerData((double)((int)serialPort.ReadByte() - 128) / 64.0, (double)((int)serialPort.ReadByte() - 128) / 64.0, (double)((int)serialPort.ReadByte() - 128) / 64.0);
                         }
                         catch (Exception)
                         {
@@ -642,10 +649,87 @@ namespace EzMon_V0._01
 
         #endregion
 
+
+        #region "activity Monitoring"
+
+        void AccelerometerData(double sensorX,double sensorY,double sensorZ){
+            
+            updateXYZVals(sensorX, sensorY, sensorZ);
+
+            gravity[0] = alpha * gravity[0] + (1 - alpha) * sensorX;
+            gravity[1] = alpha * gravity[1] + (1 - alpha) * sensorY;
+            gravity[2] = alpha * gravity[2] + (1 - alpha) * sensorZ;
+
+            sensorX -= gravity[0];
+            sensorY -= gravity[1];
+            sensorZ -= gravity[2];
+
+            magnitude = Math.Pow((Math.Pow(sensorX, 2) + Math.Pow(sensorY, 2) + Math.Pow(sensorZ, 2)), 0.5);
+            magnitudeSmoothened = beta * magnitudeSmoothened + (1 - beta) * magnitude * 50;
+
+            updateActivity(magnitudeSmoothened);
+        }
+
+        private void updateActivity(double magnitudeSmoothened)
+        {
+            
+            if (magnitudeSmoothened > 100)
+                magnitudeSmoothened = 100;
+            else if (magnitudeSmoothened < 0)
+                magnitudeSmoothened = 0;
+
+            arcActivity.EndAngle = magnitudeSmoothened * 3 - 150;
+            txtActivityIndex.Text = ((int)magnitudeSmoothened).ToString();
+
+            if (magnitudeSmoothened > 66)
+            {
+                txtActivityStatus.Text = "INTENSIVE";
+                txtActivityStatus.Foreground = Brushes.Red;
+            }
+            else if (magnitudeSmoothened > 33)
+            {
+                txtActivityStatus.Text = "MODERATE";
+                txtActivityStatus.Foreground = Brushes.Gold;
+            }
+            else
+            {
+                txtActivityStatus.Text = "RELAXED";
+                txtActivityStatus.Foreground = Brushes.Green;
+            }
+            
+            float r,g,b;
+            //color of arc
+            if ( magnitudeSmoothened < 50)
+            {
+                r = (float)(magnitudeSmoothened/50);
+                g = 1;
+            }
+            else
+            {
+                g = (float)(2 - (magnitudeSmoothened/50));
+                r = 1;
+            }
+            b = 0;
+
+            SolidColorBrush myBrush = new SolidColorBrush(Color.FromScRgb(1,r,g, b));
+            
+            arcActivity.Fill = myBrush;
+        }
+
+        private void updateXYZVals(double sensorX, double sensorY, double sensorZ)
+        {
+            xVal.Text = sensorX.ToString();
+            yVal.Text = sensorY.ToString();
+            zVal.Text = sensorZ.ToString();
+
+        }
+
+        #endregion
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Disconnect();
         }
+
 
         static string GetIntBinaryString(int n)
         {

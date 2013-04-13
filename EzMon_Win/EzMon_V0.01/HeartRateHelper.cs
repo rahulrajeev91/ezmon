@@ -206,7 +206,13 @@ namespace EzMon_V0._01
 
             if ((myVal > 0.4 * presentHeartRate && myVal < 2.5 * presentHeartRate) || (hrArray.Count < 10))//to ignore false positives
             {
-                hrArray.Add(myVal);
+                try
+                {
+                    hrArray.Add(myVal);
+                }
+                catch (Exception)
+                {
+                }
                 if (hrArray.Count > 20)
                     hrArray.RemoveAt(0);
             }
