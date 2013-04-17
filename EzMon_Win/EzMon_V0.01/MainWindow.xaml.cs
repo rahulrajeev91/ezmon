@@ -97,6 +97,12 @@ namespace EzMon_V0._01
 
         #endregion
 
+        #region "Logging Variables"
+
+        LoggingHelper logger = new LoggingHelper();
+
+        #endregion
+
 #endregion
 
         #region initialization functions
@@ -341,8 +347,9 @@ namespace EzMon_V0._01
         private void ParseData()
         {
             int byteCount = serialPort.BytesToRead;
-            uint val,payloadLength;
+            uint val;
             Byte tempByte;
+            double x, y, z;
             
             points.Clear();
             parseStep = ParseStatus.idle;       //reset
@@ -457,7 +464,9 @@ namespace EzMon_V0._01
                         points.Add(val);    //add to PPG value list
                         try
                         {
-                            AccelerometerData((double)((int)serialPort.ReadByte() - 128) / 64.0, (double)((int)serialPort.ReadByte() - 128) / 64.0, (double)((int)serialPort.ReadByte() - 128) / 64.0);
+                            x = (double)((int)serialPort.ReadByte() - 128) / 64.0;
+                            y = (double)((int)serialPort.ReadByte() - 128) / 64.0;
+                            z = (double)((int)serialPort.ReadByte() - 128) / 64.0;
                         }
                         catch (Exception)
                         {
@@ -466,6 +475,9 @@ namespace EzMon_V0._01
                         }
                         byteCount-=5;
                         //debugText.Text +=val +"\n";
+                        
+                        AccelerometerData(x, y, z);
+                        logger.writeToFile(val, x, y, z);
 
                         parseStep = ParseStatus.idle;       //reset
                         break;
