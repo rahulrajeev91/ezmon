@@ -323,12 +323,12 @@ namespace EzMon_V0._01
                     heartRate = 85;
                 else if (heartRate < 50)
                     heartRate = 50;
-                updateSlider(heartRate);
+                
                 Random random = new Random();
                 int randomNumber = random.Next(0, 5);
 
                 heartRate = heartRate + randomNumber;
-
+                updateSlider((int)smoothenedHeartRate);
                 youPointer.Visibility = Visibility.Visible;
             }
             else
