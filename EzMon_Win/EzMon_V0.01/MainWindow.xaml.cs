@@ -314,7 +314,49 @@ namespace EzMon_V0._01
 
         private void UpdateHeartRate()
         {
-            tbHeartRate.Text = HRHelper.getHeartRate().ToString();
+            int heartRate = HRHelper.getHeartRate();
+            //debug
+            if (heartRate != 0)
+            {
+                if (heartRate > 90)
+                    heartRate = 92;
+                else if (heartRate < 50)
+                    heartRate = 50;
+                updateSlider(heartRate);
+                youPointer.Visibility = Visibility.Visible;
+            }
+            else
+                youPointer.Visibility = Visibility.Hidden;
+
+            tbHeartRate.Text = heartRate.ToString();
+            
+        }
+
+        private void updateSlider(int heartRate)
+        {
+            double width = sliderGrid.ActualWidth;
+            double marginVal = (1-(((double)heartRate - 20) / 180))* 0.9 *width +.04*width;
+            youPointer.Margin = new Thickness(0,0,marginVal,35);
+
+            if (heartRate < 76)
+            {
+                tbHRStatus.Text = "HEALTHY";
+                tbHRStatus.Foreground = Brushes.Green;
+                TBHRDisplay_secondary.Foreground = Brushes.Green;
+            }
+            else if (heartRate < 140)
+            {
+                tbHRStatus.Text = "MARGINALLY HIGH";
+                tbHRStatus.Foreground = Brushes.Gold;
+                TBHRDisplay_secondary.Foreground = Brushes.Gold;
+            }
+            else
+            {
+                tbHRStatus.Text = "HIGH";
+                tbHRStatus.Foreground = Brushes.Red;
+                TBHRDisplay_secondary.Foreground = Brushes.Red;
+            }
+
         }
 
         private void UpdateTemp()
@@ -564,7 +606,10 @@ namespace EzMon_V0._01
 
         private void AddToChart(uint val)
         {
-            chart1.Series[0].Points.AddY(val);
+            if (devMode)
+            {
+                chart1.Series[0].Points.AddY(val);
+            }
             //developer mode
             DeveloperMode_AddToCharts();
         }
@@ -629,6 +674,8 @@ namespace EzMon_V0._01
         private void DevModeChecked(object sender, RoutedEventArgs e)
         {
             ResetAllCharts();
+            GraphicalDisplayGrid.Visibility = Visibility.Hidden;
+            ChartHost.Visibility = Visibility.Visible;
             timerTick.Visibility = Visibility.Visible;
             timerTick_LABEL.Visibility = Visibility.Visible;
             datacount.Visibility = Visibility.Visible;
@@ -639,10 +686,12 @@ namespace EzMon_V0._01
 
         private void DevModeUnChecked(object sender, RoutedEventArgs e)
         {
+            ChartHost.Visibility = Visibility.Hidden;
             timerTick.Visibility = Visibility.Hidden;
             timerTick_LABEL.Visibility = Visibility.Hidden;
             datacount.Visibility = Visibility.Hidden;
             datacount_LABEL.Visibility = Visibility.Hidden;
+            GraphicalDisplayGrid.Visibility = Visibility.Visible;
             chart1.ChartAreas[1].Visible = false;
             devMode = false;
         }
