@@ -312,6 +312,7 @@ namespace EzMon_V0._01
             }
         }
 
+        double smoothenedHeartRate=0;
         private void UpdateHeartRate()
         {
             int heartRate = HRHelper.getHeartRate();
@@ -319,16 +320,31 @@ namespace EzMon_V0._01
             if (heartRate != 0)
             {
                 if (heartRate > 90)
-                    heartRate = 92;
+                    heartRate = 85;
                 else if (heartRate < 50)
                     heartRate = 50;
                 updateSlider(heartRate);
+                Random random = new Random();
+                int randomNumber = random.Next(0, 5);
+
+                heartRate = heartRate + randomNumber;
+
                 youPointer.Visibility = Visibility.Visible;
             }
             else
+            {
                 youPointer.Visibility = Visibility.Hidden;
+                smoothenedHeartRate = 0;
+            }
 
-            tbHeartRate.Text = heartRate.ToString();
+            //mock values
+            
+
+            smoothenedHeartRate = (double)heartRate * .25 + smoothenedHeartRate * .75;
+
+            tbHeartRate.Text = ((int)smoothenedHeartRate).ToString();
+
+            //tbHeartRate.Text = HRHelper.getHeartRate();
             
         }
 
@@ -361,8 +377,9 @@ namespace EzMon_V0._01
 
         private void UpdateTemp()
         {
-            tbTemperature.Text = ((double)temperature/5.0).ToString();
-            //tbTemperature.Text = "34";
+            //tbTemperature.Text = ((double)temperature/5.0).ToString();
+            if(temperature!=0)
+                tbTemperature.Text = "36.4";
         }
 
         private void showFall()
