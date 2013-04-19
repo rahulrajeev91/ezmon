@@ -738,7 +738,7 @@ namespace EzMon_V0._01
 
         private void updateActivity(double magnitudeSmoothened)
         {
-            
+            magnitudeSmoothened *= 2;
             if (magnitudeSmoothened > 100)
                 magnitudeSmoothened = 100;
             else if (magnitudeSmoothened < 0)
