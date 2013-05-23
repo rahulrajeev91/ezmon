@@ -24,6 +24,10 @@ namespace EzMon_V0._01
 
 #region variables
 
+
+        double upperlimit = 0;
+        double lowerLimit = 0;
+
         #region Chart Variables
         //initialization parameters for the chartControl
         private const int CHART_INIT_HEIGHT = 421;
@@ -79,10 +83,6 @@ namespace EzMon_V0._01
         ParseStatus parseStep = ParseStatus.idle;
         #endregion
 
-        #region heart rate vars
-        HeartRateHelper HRHelper = HeartRateHelper.Instance;
-        private int dataRateCnt = 0;
-        #endregion
 
         #region "developer mode variables"
         Boolean devMode = false;
@@ -170,7 +170,6 @@ namespace EzMon_V0._01
             {
                 if (Connect()){
                     ConnectDisconnectButton.Content = "DISCONNECT";
-                    HRHelper.ResetHeartRate();
                 }
                 else
                     MessageBox.Show("Connection failed. Could not open COM port");
@@ -285,10 +284,7 @@ namespace EzMon_V0._01
                         datacount.Content = datacnt.ToString();
                         */
 
-                        IncDataRateCnt();
                         AddToChart(val);
-                        addToHeartRateCalculation(val);
-                        BeginHRComputation();
                     }
                 ScrollCharts();
             }
@@ -297,9 +293,7 @@ namespace EzMon_V0._01
         private void oneSecStep_Tick(object sender, EventArgs e)
         {
             UpdateTemp();
-            UpdateHeartRate();
             fallGridCheck();
-            UpdateDataRate();
         }
 
         private void fallGridCheck()
@@ -312,47 +306,44 @@ namespace EzMon_V0._01
             }
         }
 
-        private void UpdateHeartRate()
-        {
-            int heartRate = HRHelper.getHeartRate();
-            //debug
-            if (heartRate != 0)
-            {
-                if (heartRate > 90)
-                    heartRate = 92;
-                else if (heartRate < 50)
-                    heartRate = 50;
-                updateSlider(heartRate);
-                youPointer.Visibility = Visibility.Visible;
-            }
-            else
-                youPointer.Visibility = Visibility.Hidden;
 
-            tbHeartRate.Text = heartRate.ToString();
-            
-        }
-
-        private void updateSlider(int heartRate)
+        private void updateSlider(double Voltage)
         {
             double width = sliderGrid.ActualWidth;
-            double marginVal = (1-(((double)heartRate - 20) / 180))* 0.9 *width +.04*width;
+            
+            if (upperlimit == 0 || lowerLimit == 0)
+                return;
+            if (Voltage < lowerLimit)
+                Voltage = lowerLimit;
+            else if (Voltage > upperlimit)
+                Voltage = upperlimit;
+
+            double fraction = ((Voltage - lowerLimit)) / (upperlimit - lowerLimit);
+
+            double marginVal = (1-fraction) * 0.5 * width + .25 * width;
+
+            //double marginVal = (1-(((double)heartRate - 20) / 180))* 0.5 *width +.25*width;
+
+            youPointer.Visibility = Visibility.Visible;
             youPointer.Margin = new Thickness(0,0,marginVal,35);
 
-            if (heartRate < 76)
+            TBHRDisplay_secondary.Text = ((int)((fraction * 100) + 50)).ToString();
+
+            if (fraction < .15)
             {
-                tbHRStatus.Text = "HEALTHY";
-                tbHRStatus.Foreground = Brushes.Green;
-                TBHRDisplay_secondary.Foreground = Brushes.Green;
-            }
-            else if (heartRate < 140)
-            {
-                tbHRStatus.Text = "MARGINALLY HIGH";
+                tbHRStatus.Text = "GLUCOSE LOW";
                 tbHRStatus.Foreground = Brushes.Gold;
                 TBHRDisplay_secondary.Foreground = Brushes.Gold;
             }
+            else if (fraction < .85)
+            {
+                tbHRStatus.Text = "NORMAL";
+                tbHRStatus.Foreground = Brushes.Green;
+                TBHRDisplay_secondary.Foreground = Brushes.Green;
+            }
             else
             {
-                tbHRStatus.Text = "HIGH";
+                tbHRStatus.Text = "GLUCOSE HIGH";
                 tbHRStatus.Foreground = Brushes.Red;
                 TBHRDisplay_secondary.Foreground = Brushes.Red;
             }
@@ -383,7 +374,7 @@ namespace EzMon_V0._01
         private void ParseData()
         {
             int byteCount = serialPort.BytesToRead;
-            uint val,payloadLength;
+            uint val;
             Byte tempByte;
             
             points.Clear();
@@ -427,21 +418,6 @@ namespace EzMon_V0._01
                             parseStep = ParseStatus.idle;   //reset
                         break;
 
-/*                    case ParseStatus.length:
-                        try
-                        {
-                            payloadLength = (Byte)serialPort.ReadByte();
-                        }
-                        catch (Exception)
-                        {
-                            parseStep = ParseStatus.idle;
-                            break;
-                        }
-                        byteCount--;
-                        parseStep = ParseStatus.type;
-                        break;
-*/
-
                     case ParseStatus.type:
                         try
                         {
@@ -455,34 +431,15 @@ namespace EzMon_V0._01
                         byteCount--;
                         switch (tempByte)
                         {
-                            case 0x02:
-                                //Alerts
-                                //parseStep = ParseStatus.alert;
-                                parseStep = ParseStatus.idle;   //debug - no alerts
-                                break;
                             case 0x03:
                                 //Continious Data
                                 //parseStep = ParseStatus.contData_subtype;
                                 parseStep = ParseStatus.contDataPayload;
                                 break;
-                            case 0x04:
-                                //one-shot data
-                                parseStep = ParseStatus.singleData_subtype;
-                                break;
                             default:
                                 parseStep = ParseStatus.idle;   //reset
                                 break;
                         }
-                        break;
-
-                    case ParseStatus.alert:
-                        //debugText.Text += "Alert!\n";
-                        showFall();
-                        parseStep = ParseStatus.idle;       //reset
-                        break;
-
-                    case ParseStatus.contData_subtype:
-                        parseStep = ParseStatus.idle;       //reset
                         break;
 
                     case ParseStatus.contDataPayload:
@@ -497,52 +454,12 @@ namespace EzMon_V0._01
                             break;
                         }
                         points.Add(val);    //add to PPG value list
-                        try
-                        {
-                            AccelerometerData((double)((int)serialPort.ReadByte() - 128) / 64.0, (double)((int)serialPort.ReadByte() - 128) / 64.0, (double)((int)serialPort.ReadByte() - 128) / 64.0);
-                        }
-                        catch (Exception)
-                        {
-                            parseStep = ParseStatus.idle;
-                            break;
-                        }
-                        byteCount-=5;
-                        //debugText.Text +=val +"\n";
+
+                        tbHeartRate.Text = ((double)val * 0.0049).ToString();
+
+                        updateSlider((double)val * 0.0049);
 
                         parseStep = ParseStatus.idle;       //reset
-                        break;
-
-                    case ParseStatus.singleData_subtype:
-                        try
-                        {
-                            tempByte = (Byte)serialPort.ReadByte();
-                        }
-                        catch (Exception)
-                        {
-                            parseStep = ParseStatus.idle;
-                            break;
-                        }
-                        byteCount--;
-                        switch (tempByte)
-                        {
-                            case 0x00:
-                                try
-                                {
-                                    tempByte = (Byte)serialPort.ReadByte();
-                                }
-                                catch (Exception)
-                                {
-                                    parseStep = ParseStatus.idle;
-                                    break;
-                                }
-                                byteCount--;
-                                temperature = (int)tempByte;    //set the temperature
-                                break;
-                            default:
-                                parseStep = ParseStatus.idle;
-                                break;
-                        }
-                        parseStep = ParseStatus.idle;
                         break;
 
                     default:
@@ -555,24 +472,7 @@ namespace EzMon_V0._01
 
 #endregion
 
-        #region Heart rate functions
-
-        private void addToHeartRateCalculation(uint val)
-        {
-            HRHelper.newVal = val;
-        }
-
-        private void BeginHRComputation(){
-
-            Action<object> hrAction = (object obj) =>
-            {
-                HRHelper.setHeartRate();
-            };
-
-            Task hrTask = Task.Factory.StartNew(hrAction, "alpha");
-        }
-
-        #endregion
+        
 
         #region test function/ method stubs
 
@@ -586,32 +486,16 @@ namespace EzMon_V0._01
 
         #endregion
 
-        #region "DataRate" 
-
-        private void UpdateDataRate()
-        {
-            HRHelper.dataRate = dataRateCnt;
-            datacount.Content = dataRateCnt;
-            dataRateCnt = 0;
-        }
-
-        private void IncDataRateCnt()
-        {
-            dataRateCnt++;
-        }
-
-        #endregion
 
         #region "Chart Entry"
 
         private void AddToChart(uint val)
         {
-            if (devMode)
-            {
-                chart1.Series[0].Points.AddY(val);
-            }
+
+            chart1.Series[0].Points.AddY(val);
+
             //developer mode
-            DeveloperMode_AddToCharts();
+            //DeveloperMode_AddToCharts();
         }
 
        
@@ -621,28 +505,18 @@ namespace EzMon_V0._01
             {
                 chart1.Series[0].Points.RemoveAt(0);
                 //developer mode
-                DeveloperMode_ScrollCharts();
+                //DeveloperMode_ScrollCharts();
             }
         }
 
          private void DeveloperMode_AddToCharts()
         {
-            if (devMode)
-            {
-                chart1.Series[1].Points.AddY(HRHelper.getGraph());
-                chart1.Series[2].Points.AddY(HRHelper.getMaxima());
-                chart1.Series[3].Points.AddY(HRHelper.getThreshold());
-            }
+            
         }
         
         private void DeveloperMode_ScrollCharts()
         {
-            if (devMode)
-            {
-                chart1.Series[1].Points.RemoveAt(0);
-                chart1.Series[2].Points.RemoveAt(0);
-                chart1.Series[3].Points.RemoveAt(0);
-            }
+            
         }
 
         private void ResetAllCharts()
@@ -686,7 +560,7 @@ namespace EzMon_V0._01
 
         private void DevModeUnChecked(object sender, RoutedEventArgs e)
         {
-            ChartHost.Visibility = Visibility.Hidden;
+            //ChartHost.Visibility = Visibility.Hidden;
             timerTick.Visibility = Visibility.Hidden;
             timerTick_LABEL.Visibility = Visibility.Hidden;
             datacount.Visibility = Visibility.Hidden;
@@ -800,6 +674,18 @@ namespace EzMon_V0._01
                 i++;
             }
             return new string(b);
+        }
+
+        private void setLowerLimit_Click(object sender, RoutedEventArgs e)
+        {
+            lowerLimit = double.Parse(tbHeartRate.Text);
+            tbLower.Text = tbHeartRate.Text;
+        }
+
+        private void setUpperLimit_Click(object sender, RoutedEventArgs e)
+        {
+            upperlimit = double.Parse(tbHeartRate.Text);
+            tbUpper.Text = tbHeartRate.Text;
         }
 
 
