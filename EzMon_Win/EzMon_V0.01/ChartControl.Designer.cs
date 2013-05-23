@@ -60,7 +60,7 @@
             chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(164)))), ((int)(((byte)(164)))), ((int)(((byte)(164)))));
             chartArea1.AxisY.MajorTickMark.Enabled = false;
             chartArea1.AxisY.Maximum = 900D;
-            chartArea1.AxisY.Minimum = 700D;
+            chartArea1.AxisY.Minimum = 870D;
             chartArea1.BackColor = System.Drawing.Color.Transparent;
             chartArea1.BackImageTransparentColor = System.Drawing.Color.Transparent;
             chartArea1.BackSecondaryColor = System.Drawing.Color.Transparent;

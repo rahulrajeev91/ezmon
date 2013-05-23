@@ -678,14 +678,20 @@ namespace EzMon_V0._01
 
         private void setLowerLimit_Click(object sender, RoutedEventArgs e)
         {
-            lowerLimit = double.Parse(tbHeartRate.Text);
-            tbLower.Text = tbHeartRate.Text;
+            if (upperlimit == 0 || double.Parse(tbHeartRate.Text) < upperlimit)
+            {
+                lowerLimit = double.Parse(tbHeartRate.Text);
+                tbLower.Text = tbHeartRate.Text;
+            }
         }
 
         private void setUpperLimit_Click(object sender, RoutedEventArgs e)
         {
-            upperlimit = double.Parse(tbHeartRate.Text);
-            tbUpper.Text = tbHeartRate.Text;
+            if (double.Parse(tbHeartRate.Text) > lowerLimit)
+            {
+                upperlimit = double.Parse(tbHeartRate.Text);
+                tbUpper.Text = tbHeartRate.Text;
+            }
         }
 
 
