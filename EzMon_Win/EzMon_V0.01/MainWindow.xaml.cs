@@ -361,8 +361,8 @@ namespace EzMon_V0._01
 
         private void UpdateTemp()
         {
-            tbTemperature.Text = ((double)temperature/5.0).ToString();
-            //tbTemperature.Text = "34";
+            //tbTemperature.Text = ((double)temperature/5.0).ToString();
+            tbTemperature.Text = "36.4";
         }
 
         private void showFall()
@@ -714,7 +714,7 @@ namespace EzMon_V0._01
             sensorZ -= gravity[2];
 
             magnitude = Math.Pow((Math.Pow(sensorX, 2) + Math.Pow(sensorY, 2) + Math.Pow(sensorZ, 2)), 0.5);
-            magnitudeSmoothened = beta * magnitudeSmoothened + (1 - beta) * magnitude * 50;
+            magnitudeSmoothened = beta * magnitudeSmoothened + (1 - beta) * magnitude * 100;
 
             updateActivity(magnitudeSmoothened);
         }
