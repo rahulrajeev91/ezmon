@@ -97,6 +97,13 @@ namespace EzMon_V0._01
 
         #endregion
 
+        #region "Vpp calc"
+        double vmax_val = -1;
+        double vmin_val = -1;
+        int VppSecCounter = 0;
+        private const int VppUpdateInterval = 5; 
+        #endregion
+
 #endregion
 
         #region initialization functions
@@ -289,10 +296,12 @@ namespace EzMon_V0._01
                         AddToChart(val);
                         addToHeartRateCalculation(val);
                         BeginHRComputation();
+                        calcVpp(val);
                     }
                 ScrollCharts();
             }
         }
+
        
         private void oneSecStep_Tick(object sender, EventArgs e)
         {
@@ -300,7 +309,10 @@ namespace EzMon_V0._01
             UpdateHeartRate();
             fallGridCheck();
             UpdateDataRate();
+            if(devMode)
+                UpdateVpp();
         }
+
 
         private void fallGridCheck()
         {
@@ -680,6 +692,12 @@ namespace EzMon_V0._01
             timerTick_LABEL.Visibility = Visibility.Visible;
             datacount.Visibility = Visibility.Visible;
             datacount_LABEL.Visibility = Visibility.Visible;
+            vmax.Visibility = Visibility.Visible;
+            vmax_LABEL.Visibility = Visibility.Visible;
+            vmin.Visibility = Visibility.Visible;
+            vmin_LABEL.Visibility = Visibility.Visible;
+            vpp.Visibility = Visibility.Visible;
+            vpp_LABEL.Visibility = Visibility.Visible;
             chart1.ChartAreas[1].Visible = true;
             devMode = true;
         }
@@ -691,7 +709,13 @@ namespace EzMon_V0._01
             timerTick_LABEL.Visibility = Visibility.Hidden;
             datacount.Visibility = Visibility.Hidden;
             datacount_LABEL.Visibility = Visibility.Hidden;
-            GraphicalDisplayGrid.Visibility = Visibility.Visible;
+            vmax.Visibility = Visibility.Hidden;
+            vmax_LABEL.Visibility = Visibility.Hidden;
+            vmin.Visibility = Visibility.Hidden;
+            vmin_LABEL.Visibility = Visibility.Hidden;
+            vpp.Visibility = Visibility.Hidden;
+            vpp_LABEL.Visibility = Visibility.Hidden;
+            GraphicalDisplayGrid.Visibility = Visibility.Hidden;
             chart1.ChartAreas[1].Visible = false;
             devMode = false;
         }
@@ -774,6 +798,52 @@ namespace EzMon_V0._01
         }
 
         #endregion
+
+        #region "Vpp"
+        private void UpdateVpp()
+        {
+            if (VppSecCounter >= VppUpdateInterval)
+            {
+                VppSecCounter = 0;  //reset
+
+                if (vmax_val == -1 || vmin_val == -1)
+                {
+                    vmax.Content = 0;
+                    vmin.Content = 0;
+                    vpp.Content = 0;
+                }
+                else
+                {
+                    vmax.Content = (vmax_val * 5 / 1023).ToString();
+                    vmin.Content = (vmin_val * 5 / 1023).ToString();
+                    vpp.Content = ((vmax_val - vmin_val) * 5 / 1023).ToString();
+                    vmax_val = -1;
+                    vmin_val = -1;
+                }
+            }
+            else
+                VppSecCounter++;
+        }
+
+        private void calcVpp(uint val)
+        {
+            if (devMode)
+            {
+                if (vmax_val == -1 || vmin_val == -1)
+                    vmax_val = vmin_val = val;
+                else
+                {
+                    if (vmax_val < val)
+                        vmax_val = val;
+                    else if (vmin_val > val)
+                        vmin_val = val;
+                }
+
+            }
+        }
+
+        #endregion
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Disconnect();
