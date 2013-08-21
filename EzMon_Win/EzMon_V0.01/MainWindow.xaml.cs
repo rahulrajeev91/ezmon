@@ -715,7 +715,7 @@ namespace EzMon_V0._01
             vmin_LABEL.Visibility = Visibility.Hidden;
             vpp.Visibility = Visibility.Hidden;
             vpp_LABEL.Visibility = Visibility.Hidden;
-            GraphicalDisplayGrid.Visibility = Visibility.Hidden;
+            GraphicalDisplayGrid.Visibility = Visibility.Visible;
             chart1.ChartAreas[1].Visible = false;
             devMode = false;
         }
