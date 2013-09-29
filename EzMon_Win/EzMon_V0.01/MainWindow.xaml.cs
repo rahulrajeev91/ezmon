@@ -72,6 +72,7 @@ namespace EzMon_V0._01
 
         private int dataRateCnt = 0;
 
+        private int OutPutVal = 0;
 
 #endregion
 
@@ -252,6 +253,7 @@ namespace EzMon_V0._01
                 if (points.Count>0)
                     foreach(int val in points)
                     {
+                        OutPutVal = val;
                         tbPoints.Text = val.ToString();
                         tbmv.Text = (((double)val) * 0.03125).ToString();
                         IncDataRateCnt();
@@ -272,8 +274,15 @@ namespace EzMon_V0._01
 
         private void ParseData()
         {
-            int byteCount = serialPort.BytesToRead;
-            uint val;
+            int byteCount = 0;
+            try
+            {
+                byteCount = serialPort.BytesToRead;
+            }
+            catch (Exception)
+            {
+            }
+            int val;
             Byte tempByte;
             
             points.Clear();
@@ -316,11 +325,12 @@ namespace EzMon_V0._01
                         else
                             parseStep = ParseStatus.idle;   //reset
                         break;
+
                     case ParseStatus.data:
                         try
                         {
-                            val = (uint)serialPort.ReadByte();
-                            val = val * 256 + (uint)serialPort.ReadByte();
+                            val = (int)serialPort.ReadByte();
+                            val = val * 256 + (int)serialPort.ReadByte();
                             byteCount -= 2;
                         }
                         catch (Exception)
@@ -548,15 +558,54 @@ namespace EzMon_V0._01
         {
             chart1.ChartAreas[0].AxisY.Maximum = 33000;
             chart1.ChartAreas[0].AxisY.Minimum = 0;
+            tbZoomLower.Text = "Lower Val";
+            tbZoomUpper.Text = "Higher Val";
+            ZoomValsCorrect();
         }
 
         private void btZoomSet_Click(object sender, RoutedEventArgs e)
         {
+             int minVal = 0;
+             int maxVal = 0;
+            try
+            {
+                minVal = Int32.Parse(tbZoomLower.Text);
+                maxVal = Int32.Parse(tbZoomUpper.Text);
+            }
+            catch (Exception)
+            {
+               ZoomValsError();
+            }
+            if (minVal >= maxVal)
+            {
+                ZoomValsError();
+            }
+            else
+            {
+                //if vals are valid
+                ZoomValsCorrect();
+                chart1.ChartAreas[0].AxisY.Maximum = maxVal;
+                chart1.ChartAreas[0].AxisY.Minimum = minVal;
+            }
+
+
+        }
+
+        private void ZoomValsError()
+        {
+            tbZoomLower.BorderBrush = Brushes.Red;
+            tbZoomUpper.BorderBrush = Brushes.Red;
+        }
+
+        private void ZoomValsCorrect()
+        {
+            tbZoomLower.BorderBrush = Brushes.Gray;
+            tbZoomUpper.BorderBrush = Brushes.Gray;
         }
 
         private void btStore_Click(object sender, RoutedEventArgs e)
         {
-
+            tbStorage.Text += OutPutVal.ToString() + "\n";
         }
 
     }
