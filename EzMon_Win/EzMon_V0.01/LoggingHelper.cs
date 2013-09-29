@@ -8,24 +8,35 @@ namespace EzMon_V0._01
 {
     class LoggingHelper
     {
-        private const string path = "val.csv";
-        public void writeToFile(uint ppg, double x, double y, double z)
+        private const string path = "test.csv";
+        StreamWriter sw;
+
+        public void init()
         {
-            StreamWriter sw = new StreamWriter(path);
+            sw = new StreamWriter(path);
 
             if (!File.Exists(path))
             {
                 // Create a file to write to. 
                 try
                 {
+
                     sw = File.CreateText(path);
                 }
                 catch (Exception)
                 {
                 }
             }
-            sw.WriteLine(ppg.ToString() + ',' + x.ToString() + ',' + y.ToString() + ',' + z.ToString() + '\n');
+        }
 
+        public void writeToFile(uint ppg, double x, double y, double z)
+        { 
+            sw.WriteLine(ppg.ToString() + ',' + x.ToString() + ',' + y.ToString() + ',' + z.ToString());
+        }
+
+        public void close()
+        {
+            sw.Close();
         }
     }
 }

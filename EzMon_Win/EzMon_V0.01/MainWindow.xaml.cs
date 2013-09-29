@@ -120,6 +120,7 @@ namespace EzMon_V0._01
             InitializeTimer();
                         
             //InputMockTestVals();
+            //logger.init();
         }
 
         private void InitializeTimer()
@@ -177,6 +178,7 @@ namespace EzMon_V0._01
                 if (Connect()){
                     ConnectDisconnectButton.Content = "DISCONNECT";
                     HRHelper.ResetHeartRate();
+                    logger.init();
                 }
                 else
                     MessageBox.Show("Connection failed. Could not open COM port");
@@ -210,6 +212,7 @@ namespace EzMon_V0._01
             if (comPortClose())
             {
                 connection = connectionStatus.disconnected ;
+                logger.close();
                 return true;
             }
             else
@@ -740,6 +743,7 @@ namespace EzMon_V0._01
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Disconnect();
+            //logger.close();
         }
 
 
