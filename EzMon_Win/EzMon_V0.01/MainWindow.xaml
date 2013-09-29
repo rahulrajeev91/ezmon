@@ -7,14 +7,14 @@
         Title="ezMon" Height="682" Width="921" MinWidth="800" MinHeight="600" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
-        	<RowDefinition Height="100" />
-        	<RowDefinition Height="1*" />
-        	<RowDefinition Height="25" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="25" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="1" Margin="0" Background="#FFE3E3E3" >
             <Grid.ColumnDefinitions>
-            	<ColumnDefinition Width="200" />
-            	<ColumnDefinition Width="50" />
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="2" Margin="0" x:Name="ChartGrid" Background="White">
@@ -22,111 +22,88 @@
             </Grid>
             <Grid x:Name="leftColumn" Margin="5,5,0,0">
                 <Grid.RowDefinitions>
-                	<RowDefinition Height="30" />
-                	<RowDefinition Height="Auto" />
-                	<RowDefinition Height="Auto" />
-                	<RowDefinition Height="Auto" />
-                	<RowDefinition Height="Auto" />
-                	<RowDefinition Height="106*" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="1" Margin="0" x:Name="HRGrid">
-                    <Grid.RowDefinitions>
-                    	<RowDefinition Height="35" />
-                    	<RowDefinition Height="3" />
-                    	<RowDefinition Height="100" />
-                    	<RowDefinition Height="1*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Heart Rate" FontSize="30" />
-                    <TextBlock x:Name="tbHeartRate" Text="--" Foreground="#FFD24726" FontSize="100" Margin="0,0,33,0" HorizontalAlignment="Right" Width="157" FontStretch="Normal" FontWeight="Normal" Height="113" VerticalAlignment="Bottom" Grid.RowSpan="3" TextAlignment="Right" />
-                    <Canvas Grid.Row="1" Margin="0" Background="#FF2784E6" />
-                    <Label Content="bpm" Grid.Row="2" Margin="0" x:Name="label1" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="Auto" Padding="0" FontSize="16" />
-                </Grid>
 
-                <Grid Grid.Row="2" Margin="0" x:Name="tempGrid">
+                <Grid Grid.Row="1" Margin="0" x:Name="OutputGrid">
                     <Grid.RowDefinitions>
-                    	<RowDefinition Height="35" />
-                    	<RowDefinition Height="3" />
-                    	<RowDefinition Height="62" />
-                    	<RowDefinition Height="1*" />
+                        <RowDefinition Height="35" />
+                        <RowDefinition Height="3" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="42" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Temperature" FontSize="30" />
-                    <TextBlock x:Name="tbTemperature" Text="--" Foreground="#FFD24726" FontSize="70" Margin="0,22,33,0" HorizontalAlignment="Right" Width="152" FontStretch="Normal" FontWeight="Normal" Grid.RowSpan="3" TextAlignment="Right" />
+                    <TextBlock FontSize="30" ><Run Language="en-gb" Text="Reading"/></TextBlock>
+                    <TextBlock x:Name="tbPoints" Text="--" Foreground="#FFD24726" FontSize="55" Margin="0,22,33,0" HorizontalAlignment="Right" Width="152" FontStretch="Normal" FontWeight="Normal" Grid.RowSpan="3" TextAlignment="Right" />
                     <Canvas Grid.Row="1" Margin="0" Background="#FF2784E6" />
                     <Label Grid.Row="2" Margin="0" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="Auto" Padding="0" FontSize="16" >
-                            <TextBlock><Run BaselineAlignment="Superscript" FontSize="6pt" Text="o"/><Run Text="C"/></TextBlock>
+                        <TextBlock><Run Language="en-gb" Text="Pts"/></TextBlock>
                     </Label>
+                    <Label Grid.Row="3" Margin="0" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="Auto" Padding="0" FontSize="16" >
+                        <TextBlock><Run Language="en-gb" Text="mV"/></TextBlock>
+                    </Label>
+                    <TextBlock x:Name="tbmv" Foreground="#FFD24726" FontSize="32" Margin="0,5,33,0" HorizontalAlignment="Right" Width="152" FontStretch="Normal" FontWeight="Normal" TextAlignment="Right" Grid.Row="3" Text="--" Padding="0"/>
                 </Grid>
-                
-                <Grid Grid.Row="3" Margin="0" x:Name="AccGrid" Visibility="Visible">
+
+                <Grid Grid.Row="2" Margin="0,20,0,0" x:Name="GainGrid">
                     <Grid.RowDefinitions>
-                    	<RowDefinition Height="35" />
-                    	<RowDefinition Height="3" />
-                    	<RowDefinition Height="200" />
-                    	<RowDefinition Height="1*" />
+                        <RowDefinition Height="35" />
+                        <RowDefinition Height="3" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Activity Index" FontSize="30" />
+                    <TextBlock FontSize="30" ><Run Language="en-gb" Text="Gain"/></TextBlock>
                     <Canvas Grid.Row="1" Margin="0" Background="#FF2784E6" />
-                	<Grid Margin="0" Grid.Row="2">
-                    	
-                		<Grid.RowDefinitions>
-                			<RowDefinition Height="154*" />
-                			<RowDefinition Height="27*" />
-                		</Grid.RowDefinitions>
-                		<ed:Arc 
-                			ArcThickness="20" 
-                			ArcThicknessUnit="Pixel" 
-                			EndAngle="155" 
-                			Margin="16.449,9.615,18,0" 
-                			Stretch="None" 
-                			StartAngle="-155" OpacityMask="Black" Fill="White" Stroke="#FFBFBFBF" />
+                    <ComboBox x:Name="cbGain" Height="24" Margin="0,5,0,0" Grid.Row="2" VerticalAlignment="Top" SelectedIndex="3" IsEnabled="False">
+                        <ComboBoxItem Content="2/3x gain +/- 6.144V"/>
+                        <ComboBoxItem Content="1x gain   +/- 4.096V"/>
+                        <ComboBoxItem Content="2x gain   +/- 2.048V"/>
+                        <ComboBoxItem Content="4x gain   +/- 1.024V"/>
+                        <ComboBoxItem Content="8x gain   +/- 0.512V"/>
+                        <ComboBoxItem Content="16x gain  +/- 0.256V"/>
+                    </ComboBox>
 
-                        <ed:Arc 
-                			x:Name="arcActivity" 
-                			ArcThickness="20" 
-                			ArcThicknessUnit="Pixel" 
-                			EndAngle="-155" 
-                			Margin="16.449,9.615,18,0" 
-                			Stretch="None" 
-                			Stroke="Gray" 
-                			StartAngle="-155" OpacityMask="Black" />
-
-                		<TextBlock x:Name="txtActivityIndex" Margin="0,30,0,0" TextWrapping="Wrap" Text="0" HorizontalAlignment="Center" FontSize="48" FontWeight="Bold" Foreground="#FFD24726" Height="56" VerticalAlignment="Top" OpacityMask="Black"/>
-                		<TextBlock x:Name="txtActivityStatus" Margin="0,90,0,0" TextWrapping="Wrap" Text="--" FontSize="18.667" Foreground="#FFBCBCBC" Height="27.551" VerticalAlignment="Top" FontWeight="Bold" HorizontalAlignment="Center"/>
-                		<Grid Margin="0,5,0,5" x:Name="Grid2" Grid.Row="1">
-                			<Grid.ColumnDefinitions>
-                				<ColumnDefinition Width="1*" />
-                				<ColumnDefinition Width="2*" />
-                				<ColumnDefinition Width="1*" />
-                				<ColumnDefinition Width="2*" />
-                				<ColumnDefinition Width="1*" />
-                				<ColumnDefinition Width="2*" />
-
-                			</Grid.ColumnDefinitions>
-                			<TextBlock Margin="0,0,0,0" Text="X:" Width="Auto" TextAlignment="Right" />
-                			<TextBlock Margin="0,0,10,0"  x:Name ="xVal" Width="Auto" TextAlignment="Right" Grid.Column="1" Foreground="#FFD24726"/>
-                			<TextBlock Margin="0,0,0,0" Text="Y:" TextAlignment="Right" Width="Auto" Grid.Column="2"/>
-                			<TextBlock Margin="0,0,10,0"  x:Name ="yVal" Width="Auto" TextAlignment="Right" Grid.Column="3" Foreground="#FFD24726"/>
-                			<TextBlock Margin="0,0,0,0" Text="Z:" TextAlignment="Right" Width="Auto" Grid.Column="4"/>
-                			<TextBlock Margin="0,0,10,0"  x:Name ="zVal" Width="Auto" TextAlignment="Right" Grid.Column="5" Foreground="#FFD24726"/>
-                        
-                		</Grid>
-                	</Grid>
                 </Grid>
 
-                <Grid Grid.Row="4" Margin="5,20,5,5" x:Name="fallGrid" Visibility="Collapsed">
-                    <Rectangle RadiusX="5" RadiusY="5" Fill="#FFFF6500" />
-                    <Label Margin="0" Content="FALL DETECTED" FontSize="24" FontWeight="Normal" Foreground="White" FontStretch="Condensed" Padding="10,30" HorizontalContentAlignment="Center" />
+                <Grid Grid.Row="3" Margin="0,20,0,0" x:Name="ZoomGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35" />
+                        <RowDefinition Height="3" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock FontSize="30" ><Run Language="en-gb" Text="Zoom"/></TextBlock>
+                    <Canvas Grid.Row="1" Margin="0" Background="#FF2784E6" />
+                    <TextBox x:Name="tbZoomLower" Margin="0,7,114,2" Grid.Row="2" TextWrapping="Wrap" Text="lower Val"/>
+                    <TextBox x:Name="tbZoomUpper" Margin="114,7,0,2" Grid.Row="2" TextWrapping="Wrap" Text="Higher Val"/>
+                    <Button x:Name="btZoomSet" Content="Set" HorizontalAlignment="Left" Height="21" Margin="105,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="90" Click="btZoomSet_Click"/>
+                    <Button x:Name="btZoomReset" Content="Reset" HorizontalAlignment="Left" Height="21" Margin="0,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="90" Click="btZoomReset_Click"/>
+                    <Label Content="to" Margin="86,7,86,0" Grid.Row="2"/>
+
+                </Grid>
+                <Grid Grid.Row="4" Margin="0,20,0,0" x:Name="storeGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35" />
+                        <RowDefinition Height="3" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock FontSize="30" ><Run Language="en-gb" Text="Store Values"/></TextBlock>
+                    <Canvas Grid.Row="1" Margin="0" Background="#FF2784E6" />
+                    <Button x:Name="btStore" Content="Store" HorizontalAlignment="Left" Margin="105,5,0,5" Grid.Row="3" Width="90" Click="btStore_Click"/>
+                    <ScrollViewer HorizontalAlignment="Stretch" Height="Auto" Margin="0,2,0,0" Grid.Row="2" VerticalAlignment="Stretch" Width="Auto">
+                        <TextBox x:Name="tbStorage" Grid.Row="2" TextWrapping="Wrap" Height="Auto"/>
+                    </ScrollViewer>
                 </Grid>
 
-                <ScrollViewer Visibility="Visible" Grid.Row="5" Margin="0,0,0,5" VerticalScrollBarVisibility="Hidden" VerticalContentAlignment="Bottom">
-                    <TextBlock   x:Name="debugText" Margin="10,0,0,0" />
-                </ScrollViewer>
             </Grid>
         </Grid>
         <Grid Margin="0" x:Name="top" Background="#FFD24726">
             <Grid.RowDefinitions>
-            	<RowDefinition Height="1*" />
-            	<RowDefinition Height="5"/>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="5"/>
             </Grid.RowDefinitions>
             <Canvas Grid.Row="2" Margin="0" Background="#FF2784E6" />
             <Image HorizontalAlignment="Left" Margin="10" Stretch="Uniform" Width="Auto" Source="/EzMon;component/Images/ezMon%20logo_horizaonta_black_lowres.png" />
@@ -134,11 +111,10 @@
         </Grid>
         <Grid Grid.Row="2" Margin="0" x:Name="grid2" Background="#FF2784E6" Height="25" VerticalAlignment="Bottom">
             <ComboBox x:Name="cbPort" Margin="0,3,5,3" HorizontalAlignment="Right" Width="75" Background="#00000000" DropDownOpened="cbPort_DropDownOpened" />
-            <Label Margin="5,0,0,0" HorizontalAlignment="Left" Width="66" Background="#00000000" x:Name="timerTick_LABEL" Content="Timer Tick:" Visibility="Hidden"/>
-            <Label Margin="71,0,0,0" HorizontalAlignment="Left" Width="50" Background="#00000000" x:Name="timerTick" Visibility="Hidden" />
-            <Label Margin="130,0,0,0" HorizontalAlignment="Left" Width="65" Background="#00000000" x:Name="datacount_LABEL" Content="Data Rate:" Visibility="Hidden"/>
-            <Label Margin="195,0,0,0" HorizontalAlignment="Left" Width="50" Background="#00000000" x:Name="datacount" Visibility="Hidden"/>
-            <CheckBox Content="Developer Mode" HorizontalAlignment="Right" Margin="0,5,85,5" Width="110" Checked="DevModeChecked" Unchecked="DevModeUnChecked"/>
+            <Label Margin="5,0,0,0" HorizontalAlignment="Left" Width="66" Background="#00000000" x:Name="timerTick_LABEL" Content="Timer Tick:"/>
+            <Label Margin="71,0,0,0" HorizontalAlignment="Left" Width="50" Background="#00000000" x:Name="timerTick"/>
+            <Label Margin="130,0,0,0" HorizontalAlignment="Left" Width="65" Background="#00000000" x:Name="datacount_LABEL" Content="Data Rate:"/>
+            <Label Margin="195,0,0,0" HorizontalAlignment="Left" Width="50" Background="#00000000" x:Name="datacount"/>
         </Grid>
     </Grid>
 </Window>
