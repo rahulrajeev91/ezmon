@@ -147,6 +147,7 @@ namespace EzMon_V0._01
             {
                 if (Connect()){
                     ConnectDisconnectButton.Content = "DISCONNECT";
+                    ResetAllCharts();
                 }
                 else
                     MessageBox.Show("Connection failed. Could not open COM port");
@@ -169,6 +170,65 @@ namespace EzMon_V0._01
         private void cbPort_DropDownOpened(object sender, EventArgs e)
         {
             UpdateComPortList();
+        }
+
+        private void btZoomReset_Click(object sender, RoutedEventArgs e)
+        {
+            chart1.ChartAreas[0].AxisY.Maximum = 33000;
+            chart1.ChartAreas[0].AxisY.Minimum = 0;
+            tbZoomLower.Text = "Lower Val";
+            tbZoomUpper.Text = "Higher Val";
+            ZoomValsCorrect();
+        }
+
+        private void btZoomSet_Click(object sender, RoutedEventArgs e)
+        {
+            int minVal = 0;
+            int maxVal = 0;
+            try
+            {
+                minVal = Int32.Parse(tbZoomLower.Text);
+                maxVal = Int32.Parse(tbZoomUpper.Text);
+            }
+            catch (Exception)
+            {
+                ZoomValsError();
+            }
+            if (minVal >= maxVal)
+            {
+                ZoomValsError();
+            }
+            else
+            {
+                //if vals are valid
+                ZoomValsCorrect();
+                chart1.ChartAreas[0].AxisY.Maximum = maxVal;
+                chart1.ChartAreas[0].AxisY.Minimum = minVal;
+            }
+
+
+        }
+
+        private void ZoomValsError()
+        {
+            tbZoomLower.BorderBrush = Brushes.Red;
+            tbZoomUpper.BorderBrush = Brushes.Red;
+        }
+
+        private void ZoomValsCorrect()
+        {
+            tbZoomLower.BorderBrush = Brushes.Gray;
+            tbZoomUpper.BorderBrush = Brushes.Gray;
+        }
+
+        private void btStore_Click(object sender, RoutedEventArgs e)
+        {
+            tbStorage.Text += OutPutVal.ToString() + "\n";
+        }
+
+        private void BtClear_Click(object sender, RoutedEventArgs e)
+        {
+            ResetAllCharts();
         }
 
 #endregion
@@ -554,58 +614,13 @@ namespace EzMon_V0._01
             return new string(b);
         }
 
-        private void btZoomReset_Click(object sender, RoutedEventArgs e)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            chart1.ChartAreas[0].AxisY.Maximum = 33000;
-            chart1.ChartAreas[0].AxisY.Minimum = 0;
-            tbZoomLower.Text = "Lower Val";
-            tbZoomUpper.Text = "Higher Val";
-            ZoomValsCorrect();
-        }
-
-        private void btZoomSet_Click(object sender, RoutedEventArgs e)
-        {
-             int minVal = 0;
-             int maxVal = 0;
-            try
-            {
-                minVal = Int32.Parse(tbZoomLower.Text);
-                maxVal = Int32.Parse(tbZoomUpper.Text);
-            }
-            catch (Exception)
-            {
-               ZoomValsError();
-            }
-            if (minVal >= maxVal)
-            {
-                ZoomValsError();
-            }
-            else
-            {
-                //if vals are valid
-                ZoomValsCorrect();
-                chart1.ChartAreas[0].AxisY.Maximum = maxVal;
-                chart1.ChartAreas[0].AxisY.Minimum = minVal;
-            }
-
-
-        }
-
-        private void ZoomValsError()
-        {
-            tbZoomLower.BorderBrush = Brushes.Red;
-            tbZoomUpper.BorderBrush = Brushes.Red;
-        }
-
-        private void ZoomValsCorrect()
-        {
-            tbZoomLower.BorderBrush = Brushes.Gray;
-            tbZoomUpper.BorderBrush = Brushes.Gray;
-        }
-
-        private void btStore_Click(object sender, RoutedEventArgs e)
-        {
-            tbStorage.Text += OutPutVal.ToString() + "\n";
+            if (e.Key == Key.S||e.Key == Key.Space)
+                tbStorage.Text+= tbPoints.Text +'\n';
+            if (e.Key == Key.C)
+                ResetAllCharts();
+            // open form
         }
 
     }
