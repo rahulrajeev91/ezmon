@@ -670,7 +670,7 @@ namespace EzMon_V0._01
 
         private void InitChartSeries()
         {
-            chart1.Series[0].Points.Add(0);
+            chart1.Series[0].Points.Add(900);
 
             // developer mode plots
             chart1.Series[1].Points.Add(0);
@@ -698,7 +698,7 @@ namespace EzMon_V0._01
             vmin_LABEL.Visibility = Visibility.Visible;
             vpp.Visibility = Visibility.Visible;
             vpp_LABEL.Visibility = Visibility.Visible;
-            chart1.ChartAreas[1].Visible = true;
+            //chart1.ChartAreas[1].Visible = true;
             devMode = true;
         }
 
@@ -716,7 +716,7 @@ namespace EzMon_V0._01
             vpp.Visibility = Visibility.Hidden;
             vpp_LABEL.Visibility = Visibility.Hidden;
             GraphicalDisplayGrid.Visibility = Visibility.Visible;
-            chart1.ChartAreas[1].Visible = false;
+            //chart1.ChartAreas[1].Visible = false;
             devMode = false;
         }
 
