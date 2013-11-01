@@ -30,6 +30,7 @@
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chartDesign = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.chartDesign)).BeginInit();
             this.SuspendLayout();
@@ -71,7 +72,13 @@
             series1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(39)))), ((int)(((byte)(132)))), ((int)(((byte)(230)))));
             series1.IsVisibleInLegend = false;
             series1.Name = "Series1";
+            series2.BorderWidth = 2;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
+            series2.Color = System.Drawing.Color.Red;
+            series2.Name = "Series2";
             this.chartDesign.Series.Add(series1);
+            this.chartDesign.Series.Add(series2);
             this.chartDesign.Size = new System.Drawing.Size(568, 421);
             this.chartDesign.TabIndex = 0;
             this.chartDesign.Text = "chart1";

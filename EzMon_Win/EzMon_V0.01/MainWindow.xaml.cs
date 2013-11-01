@@ -56,7 +56,7 @@ namespace EzMon_V0._01
 
         #region Plot data variables
         private System.Collections.ArrayList  points = new System.Collections.ArrayList() ;
-
+        double smoothPointVAL = 0;
         #endregion
 
         #region parsing variables
@@ -179,6 +179,15 @@ namespace EzMon_V0._01
             tbZoomLower.Text = "Lower Val";
             tbZoomUpper.Text = "Higher Val";
             ZoomValsCorrect();
+        }
+
+        private void btAutoZoomSet_Click(object sender, RoutedEventArgs e)
+        {
+            if (OutPutVal != 0)
+            {
+                chart1.ChartAreas[0].AxisY.Maximum = OutPutVal + 300;
+                chart1.ChartAreas[0].AxisY.Minimum = OutPutVal - 300;
+            }
         }
 
         private void btZoomSet_Click(object sender, RoutedEventArgs e)
@@ -313,14 +322,20 @@ namespace EzMon_V0._01
                 if (points.Count>0)
                     foreach(int val in points)
                     {
-                        OutPutVal = val;
-                        tbPoints.Text = val.ToString();
-                        tbmv.Text = (((double)val) * 0.03125).ToString();
+                        OutPutVal = LowPassFilter(val);
+                        tbPoints.Text = OutPutVal.ToString();
+                        tbmv.Text = (((double)OutPutVal) * 0.03125).ToString();
                         IncDataRateCnt();
-                        AddToChart(val);
+                        AddToChart(val, OutPutVal);
                     }
                 ScrollCharts();
             }
+        }
+
+        private int LowPassFilter(int val)
+        {
+            smoothPointVAL = 0.98 * smoothPointVAL + 0.02 * (double)val;
+            return (int)smoothPointVAL;
         }
        
         private void oneSecStep_Tick(object sender, EventArgs e)
@@ -401,123 +416,6 @@ namespace EzMon_V0._01
                         points.Add(val);    //add to value list
                         break;
 
-                    /*                    case ParseStatus.length:
-                                            try
-                                            {
-                                                payloadLength = (Byte)serialPort.ReadByte();
-                                            }
-                                            catch (Exception)
-                                            {
-                                                parseStep = ParseStatus.idle;
-                                                break;
-                                            }
-                                            byteCount--;
-                                            parseStep = ParseStatus.type;
-                                            break;
-
-
-                                        case ParseStatus.type:
-                                            try
-                                            {
-                                                tempByte = (Byte)serialPort.ReadByte();
-                                            }
-                                            catch (Exception)
-                                            {
-                                                parseStep = ParseStatus.idle;
-                                                break;
-                                            }
-                                            byteCount--;
-                                            switch (tempByte)
-                                            {
-                                                case 0x02:
-                                                    //Alerts
-                                                    //parseStep = ParseStatus.alert;
-                                                    parseStep = ParseStatus.idle;   //debug - no alerts
-                                                    break;
-                                                case 0x03:
-                                                    //Continious Data
-                                                    //parseStep = ParseStatus.contData_subtype;
-                                                    parseStep = ParseStatus.contDataPayload;
-                                                    break;
-                                                case 0x04:
-                                                    //one-shot data
-                                                    parseStep = ParseStatus.singleData_subtype;
-                                                    break;
-                                                default:
-                                                    parseStep = ParseStatus.idle;   //reset
-                                                    break;
-                                            }
-                                            break;
-
-                                        case ParseStatus.alert:
-                                            //debugText.Text += "Alert!\n";
-                                            parseStep = ParseStatus.idle;       //reset
-                                            break;
-
-                                        case ParseStatus.contData_subtype:
-                                            parseStep = ParseStatus.idle;       //reset
-                                            break;
-
-                                        case ParseStatus.contDataPayload:
-                                            try
-                                            {
-                                                val = (uint)serialPort.ReadByte();
-                                                val = val * 256 + (uint)serialPort.ReadByte();
-                                            }
-                                            catch (Exception)
-                                            {
-                                                parseStep = ParseStatus.idle;
-                                                break;
-                                            }
-                                            points.Add(val);    //add to PPG value list
-                                            try
-                                            {
-                                                AccelerometerData((double)((int)serialPort.ReadByte() - 128) / 64.0, (double)((int)serialPort.ReadByte() - 128) / 64.0, (double)((int)serialPort.ReadByte() - 128) / 64.0);
-                                            }
-                                            catch (Exception)
-                                            {
-                                                parseStep = ParseStatus.idle;
-                                                break;
-                                            }
-                                            byteCount-=5;
-                                            //debugText.Text +=val +"\n";
-
-                                            parseStep = ParseStatus.idle;       //reset
-                                            break;
-
-                                        case ParseStatus.singleData_subtype:
-                                            try
-                                            {
-                                                tempByte = (Byte)serialPort.ReadByte();
-                                            }
-                                            catch (Exception)
-                                            {
-                                                parseStep = ParseStatus.idle;
-                                                break;
-                                            }
-                                            byteCount--;
-                                            switch (tempByte)
-                                            {
-                                                case 0x00:
-                                                    try
-                                                    {
-                                                        tempByte = (Byte)serialPort.ReadByte();
-                                                    }
-                                                    catch (Exception)
-                                                    {
-                                                        parseStep = ParseStatus.idle;
-                                                        break;
-                                                    }
-                                                    byteCount--;
-                                                    temperature = (int)tempByte;    //set the temperature
-                                                    break;
-                                                default:
-                                                    parseStep = ParseStatus.idle;
-                                                    break;
-                                            }
-                                            parseStep = ParseStatus.idle;
-                                            break;
-                    */
                     default:
                         parseStep = ParseStatus.idle;
                         break;
@@ -557,9 +455,10 @@ namespace EzMon_V0._01
 
         #region "Chart Entry"
 
-        private void AddToChart(int val)
+        private void AddToChart(int val, int SmoothVal)
         {
             chart1.Series[0].Points.AddY(val);
+            chart1.Series[1].Points.AddY(SmoothVal);
         }
 
 
@@ -569,17 +468,23 @@ namespace EzMon_V0._01
             {
                 chart1.Series[0].Points.RemoveAt(0);
             }
+            while (chart1.Series[1].Points.Count > MAX_POINTS)
+            {
+                chart1.Series[1].Points.RemoveAt(0);
+            }
         }
 
         private void ResetAllCharts()
         {
             chart1.Series[0].Points.Clear();
+            chart1.Series[1].Points.Clear();
             InitChartSeries();
         }
 
         private void InitChartSeries()
         {
             chart1.Series[0].Points.Add(0);
+            chart1.Series[1].Points.Add(0);
         }
 
 
@@ -623,5 +528,14 @@ namespace EzMon_V0._01
             // open form
         }
 
+        private void cbOriginalGraph_Checked(object sender, RoutedEventArgs e)
+        {
+                chart1.Series[0].Enabled = true;
+        }
+
+        private void cbOriginalGraph_Unchecked(object sender, RoutedEventArgs e)
+        {
+            chart1.Series[0].Enabled = false;
+        }
     }
 }
