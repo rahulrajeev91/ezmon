@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.IO.Ports;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,15 @@ namespace EzMon_V0._01
     {
 
 #region variables
+
+        #region Chart Variables
+
+        Boolean avg_10s = false;
+        int average_10s_SecondCounter = 0;
+        double average_10s_PointCounter = 0;
+        long average_10s_Sum = 0;
+
+        #endregion
 
         #region Chart Variables
         //initialization parameters for the chartControl
@@ -327,6 +337,12 @@ namespace EzMon_V0._01
                         tbmv.Text = (((double)OutPutVal) * 0.03125).ToString();
                         IncDataRateCnt();
                         AddToChart(val, OutPutVal);
+                        if (avg_10s)
+                        {
+                            average_10s_PointCounter++;
+                            average_10s_Sum += OutPutVal;
+                        }
+
                     }
                 ScrollCharts();
             }
@@ -341,6 +357,15 @@ namespace EzMon_V0._01
         private void oneSecStep_Tick(object sender, EventArgs e)
         {
             UpdateDataRate();
+            if (avg_10s)
+            {
+                average_10s_SecondCounter++;
+                if (average_10s_SecondCounter >= 10)
+                {
+                    tbStorage.Text += "10 Sec Average : " + (average_10s_Sum / average_10s_PointCounter).ToString() + "\n";
+                    resetAvg_10s();
+                }
+            }
         }
 
         #endregion
@@ -407,6 +432,7 @@ namespace EzMon_V0._01
                             val = (int)serialPort.ReadByte();
                             val = val * 256 + (int)serialPort.ReadByte();
                             byteCount -= 2;
+                            parseStep = ParseStatus.idle;
                         }
                         catch (Exception)
                         {
@@ -493,6 +519,7 @@ namespace EzMon_V0._01
        
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            SaveStoredValues();
             Disconnect();
         }
 
@@ -536,6 +563,44 @@ namespace EzMon_V0._01
         private void cbOriginalGraph_Unchecked(object sender, RoutedEventArgs e)
         {
             chart1.Series[0].Enabled = false;
+        }
+
+        private void SaveStoredValues()
+        {
+            String StoredVals = null;
+            try 
+	        {	        
+		         StoredVals = tbStorage.Text.Trim() ;
+	        }
+	        catch (Exception)
+            {
+                return;
+            }
+
+            if (StoredVals.Length > 0)
+            {
+                using (StreamWriter w = File.AppendText("Stored Val.txt"))
+                {
+                    w.WriteLine("-------------------------------");
+                    w.Write(StoredVals);
+                    w.Write('\n');
+                }
+            }
+        }
+
+        private void Bt_10sAverage_Click(object sender, RoutedEventArgs e)
+        {
+            resetAvg_10s();
+            avg_10s = true;
+
+        }
+
+        private void resetAvg_10s()
+        {
+            avg_10s = false;
+            average_10s_SecondCounter = -1;
+            average_10s_PointCounter = 0;
+            average_10s_Sum = 0;
         }
     }
 }
