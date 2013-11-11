@@ -330,6 +330,7 @@ namespace EzMon_V0._01
             //debug
             if (heartRate != 0)
             {
+                heartRate -= 5;
                 if (heartRate > 90)
                     heartRate = 92;
                 else if (heartRate < 50)
@@ -373,7 +374,7 @@ namespace EzMon_V0._01
 
         private void UpdateTemp()
         {
-            tbTemperature.Text = ((double)temperature/5.0).ToString();
+            tbTemperature.Text = ((double)temperature/5.0 + (temperature!=0?3:0)).ToString();
             //tbTemperature.Text = "34";
         }
 
